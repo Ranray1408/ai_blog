@@ -1,0 +1,134 @@
+[
+	{
+		"id": 1,
+		"fullName": "John Techson",
+		"position": "Quantum Computing",
+		"photo": "",
+		"title": "The Quantum Leap in Computing",
+		"shortDescription": "Explore the revolution in quantum computing, its applications, and its potential impact on various industries.",
+		"likesCount": 25500,
+		"commentsCount": 50,
+		"messagesCount": 20
+	},
+	{
+		"id": 2,
+		"fullName": "Sarah Ethicist",
+		"position": "AI Ethics",
+		"photo": "",
+		"title": "The Ethical Dilemmas of AI",
+		"shortDescription": "A deep dive into ethical challenges posed by AI, including bias, privacy, and transparency.",
+		"likesCount": 32000,
+		"commentsCount": 72,
+		"messagesCount": 18
+	},
+	{
+		"id": 3,
+		"fullName": "John Duo",
+		"position": "Web Development",
+		"photo": "",
+		"title": "Web Development Expert",
+		"shortDescription": "Exploring cool web UI/UX technologies.",
+		"likesCount": 20000,
+		"commentsCount": 31,
+		"messagesCount": 12
+	},
+	{
+		"id": 4,
+		"fullName": "Astronomer X",
+		"position": "Space Exploration",
+		"photo": "",
+		"title": "The Mars Colonization Challenge",
+		"shortDescription": "Exploring the technical and logistical challenges of human colonization on Mars.",
+		"likesCount": 20000,
+		"commentsCount": 31,
+		"messagesCount": 12
+	},
+	{
+		"id": 5,
+		"fullName": "Alice Biotech",
+		"position": "Biotechnology",
+		"photo": "",
+		"title": "Revolutionizing Medicine with Biotechnology",
+		"shortDescription": "Exploring the latest advancements in biotechnology, from gene editing to personalized medicine.",
+		"likesCount": 18500,
+		"commentsCount": 41,
+		"messagesCount": 15
+	},
+	{
+		"id": 6,
+		"fullName": "David Greenfield",
+		"position": "Biotechnology",
+		"photo": "",
+		"title": "The Future of Biotech in Healthcare",
+		"shortDescription": "How biotechnology is shaping the future of healthcare with innovative treatments and therapies.",
+		"likesCount": 21000,
+		"commentsCount": 56,
+		"messagesCount": 22
+	},
+	{
+		"id": 7,
+		"fullName": "Linda Solar",
+		"position": "Renewable Energy",
+		"photo": "",
+		"title": "Solar Energy: A Sustainable Future",
+		"shortDescription": "Discover the transformative potential of solar energy and its role in combating climate change.",
+		"likesCount": 24000,
+		"commentsCount": 62,
+		"messagesCount": 25
+	},
+	{
+		"id": 8,
+		"fullName": "Ethan Windmill",
+		"position": "Renewable Energy",
+		"photo": "",
+		"title": "Harnessing Wind Energy for a Greener World",
+		"shortDescription": "The potential of wind energy in the global shift towards sustainable power solutions.",
+		"likesCount": 29000,
+		"commentsCount": 75,
+		"messagesCount": 28
+	},
+	{
+		"id": 9,
+		"fullName": "Mia Ecoheart",
+		"position": "Renewable Energy",
+		"photo": "",
+		"title": "The Evolution of Green Energy Solutions",
+		"shortDescription": "A look into the growing industry of renewable energy, including wind, solar, and hydroelectric power.",
+		"likesCount": 26500,
+		"commentsCount": 54,
+		"messagesCount": 19
+	},
+	{
+		"id": 10,
+		"fullName": "Mark Greenstein",
+		"position": "Renewable Energy",
+		"photo": "",
+		"title": "Building a Sustainable Future with Clean Energy",
+		"shortDescription": "Innovative ways clean energy is transforming industries and reducing our carbon footprint.",
+		"likesCount": 23000,
+		"commentsCount": 48,
+		"messagesCount": 14
+	},
+	{
+		"id": 11,
+		"fullName": "Sophia BioTech",
+		"position": "Biotechnology",
+		"photo": "",
+		"title": "The Promise of CRISPR in Genetic Engineering",
+		"shortDescription": "How gene editing tools like CRISPR are revolutionizing medical treatments and agricultural practices.",
+		"likesCount": 19500,
+		"commentsCount": 36,
+		"messagesCount": 13
+	},
+	{
+		"id": 12,
+		"fullName": "Oscar Greenleaf",
+		"position": "Biotechnology",
+		"photo": "",
+		"title": "Sustainable Agriculture through Biotechnology",
+		"shortDescription": "The role of biotechnology in creating sustainable farming practices and ensuring food security.",
+		"likesCount": 21000,
+		"commentsCount": 49,
+		"messagesCount": 16
+	}
+]

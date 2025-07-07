@@ -1,0 +1,50 @@
+{
+	"blogsInfoData" : {
+		"blogInfoData1" : {
+			"title": "Future Technology Blog",
+			"description": "Stay informed with our blog section dedicated to future technology.",
+			"svg": "CircleQuarter",
+			"columns": [
+			  {
+				"columnTitle": "Quantity",
+				"columnText": "Over 1,000 articles on emerging tech trends and breakthroughs."
+			  },
+			  {
+				"columnTitle": "Variety",
+				"columnText": "Articles cover fields like AI, robotics, biotechnology, and more."
+			  },
+			  {
+				"columnTitle": "Frequency",
+				"columnText": "Fresh content added daily to keep you up to date."
+			  },
+			  {
+				"columnTitle": "Authoritative",
+				"columnText": "Written by our team of tech experts and industry professionals."
+			  }
+			]
+		},
+		"blogInfoData2" : {
+			"title": "Research Insights Blogs",
+			"description": "Dive deep into future technology concepts with our research section.",
+			"svg": "TriangleFlag",
+			"columns": [
+				{
+					"columnTitle": "Depth",
+					"columnText": "500+ research articles for in-depth understanding."
+				},
+				{
+					"columnTitle": "Graphics",
+					"columnText": "Visual aids and infographics to enhance comprehension."
+				},
+				{
+					"columnTitle": "Trends",
+					"columnText": "Explore emerging trends in future technology research."
+				},
+				{
+					"columnTitle": "Contributors",
+					"columnText": "Contributions from tech researchers and academics."
+				}
+			]
+		}
+	}
+  }

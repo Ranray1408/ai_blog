@@ -1,0 +1,42 @@
+{
+  "name": "ai_blog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "axios": "^1.8.4",
+    "babel-plugin-styled-components": "^2.1.4",
+    "dotenv": "^16.5.0",
+    "js-cookie": "^3.0.5",
+    "next": "15.0.3",
+    "ra-data-json-server": "^5.8.2",
+    "ra-data-simple-rest": "^5.8.1",
+    "react": "^18.2.0",
+    "react-admin": "^5.8.1",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.54.2",
+    "react-redux": "^9.2.0",
+    "socket.io-client": "^4.8.1",
+    "styled-components": "^6.1.14",
+    "swiper": "^11.2.2"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.3",
+    "sass": "^1.89.0",
+    "sass-loader": "^13.3.3",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,189 @@
+{
+	"footerMenus": [
+		{
+			"menuName": "Home",
+			"menuItems": [
+				{
+					"itemName": "Features",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Blogs",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Resources",
+					"itemUrl": "/",
+					"isNew": true
+				},
+				{
+					"itemName": "Testimonials",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Contact Us",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Newsletter",
+					"itemUrl": "/",
+					"isNew": false
+				}
+			]
+		},
+		{
+			"menuName": "News",
+			"menuItems": [
+				{
+					"itemName": "Trending Stories",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Featured Videos",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Technology",
+					"itemUrl": "/",
+					"isNew": true
+				},
+				{
+					"itemName": "Health",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Politics",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Environment",
+					"itemUrl": "/",
+					"isNew": false
+				}
+			]
+		},
+		{
+			"menuName": "Blogs",
+			"menuItems": [
+				{
+					"itemName": "Quantum Computing",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "AI Ethics",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Space Exploration",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Biotechnology",
+					"itemUrl": "/",
+					"isNew": true
+				},
+				{
+					"itemName": "Renewable Energy",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Biohacking",
+					"itemUrl": "/",
+					"isNew": false
+				}
+			]
+		},
+		{
+			"menuName": "Podcasts",
+			"menuItems": [
+				{
+					"itemName": "AI Revolution",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "AI Revolution",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "TechTalk AI",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "AI Conversations",
+					"itemUrl": "/",
+					"isNew": false
+				}
+			]
+		},
+		{
+			"menuName": "Resources",
+			"menuItems": [
+				{
+					"itemName": "Whitepapers",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Ebooks",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Reports",
+					"itemUrl": "/",
+					"isNew": false
+				},
+				{
+					"itemName": "Research Papers",
+					"itemUrl": "/",
+					"isNew": false
+				}
+			]
+		}
+	],
+	"footerBottomInfo": {
+		"policy": [
+			{
+				"itemName": "Terms & Conditions",
+				"itemUrl": "/"
+			},
+			{
+				"itemName": "Privacy Policy",
+				"itemUrl": "/"
+			}
+		],
+		"socials": [
+			{
+				"socialId": 1,
+				"socialIcon": "Twitter",
+				"socialUrl": "/"
+			},
+			{
+				"socialId": 2,
+				"socialIcon": "Spotify",
+				"socialUrl": "/"
+			},
+			{
+				"socialId": 3,
+				"socialIcon": "Linkedin",
+				"socialUrl": "/"
+			}
+		],
+		"ps": "© 2024 FutureTech. All rights reserved."
+	}
+}

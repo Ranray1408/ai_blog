@@ -1,0 +1,22 @@
+{
+	"statistics": [
+		{
+			"title": "Resources available",
+			"value": "300"
+		},
+		{
+			"title": "Total Downloads",
+			"value": "12k"
+		},
+		{
+			"title": "Active Users",
+			"value": "10k"
+		}
+	],
+	"uptitle": "Your Journey to Tomorrow Begins Here",
+	"title": "Explore the Frontiers of Artificial Intelligence",
+	"suptitle": "Welcome to the epicenter of AI innovation. FutureTech AI News is your passport to a world where machines think, learn, and reshape the future. Join us on this visionary expedition into the heart of AI.",
+	"infoTitle": "Explore 1000+ resources",
+	"infotText": "Over 1,000 articles on emerging tech trends and breakthroughs.",
+	"buttonText" : "Explore Resources"
+}

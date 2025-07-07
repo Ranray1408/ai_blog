@@ -1,0 +1,60 @@
+{
+	"downloadBlock1": {
+		"svg" : "DividedTarget",
+		"imageUrl" : "/images/donwlodBlock1Image.png",
+		"title": "Ebooks",
+		"text": "Explore our collection of ebooks covering a wide spectrum of future technology topics.",
+		"buttonText1": "Download Whitepapers Now",
+		"buttonText2": "Preview",
+		"blockStatistic": {
+			"text": "Downloaded By",
+			"downloadUsersCount": 10000,
+			"text2": "+ Users"
+		},
+		"rightTitle": "Variety of Topics",
+		"rightDescription": "Topics include AI in education (25%), renewable energy (20%), healthcare (15%), space exploration (25%), and biotechnology (15%).",
+		"innersBlocks": [
+			{
+				"innerTitle": "Total Ebooks",
+				"innerText": "Over 100 ebooks"
+			},
+			{
+				"innerTitle": "Download Formats",
+				"innerText": "PDF format for access."
+			},
+			{
+				"innerTitle": "Average Author Expertise",
+				"innerText": "Ebooks are authored by renowned experts with an average of 15 years of experience"
+			}
+		]
+	},
+	"downloadBlock2": {
+		"svg" : "DividedTarget",
+		"imageUrl" : "/images/donwlodBlock2Image.png",
+		"title": "Ebooks",
+		"text": "Explore our collection of ebooks covering a wide spectrum of future technology topics.",
+		"buttonText1": "Download Whitepapers Now",
+		"buttonText2": "Preview",
+		"blockStatistic": {
+			"text": "Downloaded By",
+			"downloadUsersCount": 10000,
+			"text2": "+ Users"
+		},
+		"rightTitle": "Variety of Topics",
+		"rightDescription": "Topics include AI in education (25%), renewable energy (20%), healthcare (15%), space exploration (25%), and biotechnology (15%).",
+		"innersBlocks": [
+			{
+				"innerTitle": "Total Ebooks",
+				"innerText": "Over 100 ebooks"
+			},
+			{
+				"innerTitle": "Download Formats",
+				"innerText": "PDF format for access."
+			},
+			{
+				"innerTitle": "Average Author Expertise",
+				"innerText": "Ebooks are authored by renowned experts with an average of 15 years of experience"
+			}
+		]
+	}
+}

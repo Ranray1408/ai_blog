@@ -1,0 +1,26 @@
+{
+	"headerText": "Subscribe to our Newsletter For New & latest Blogs and Resources",
+	"navigation": [
+		{
+			"label": "Home",
+			"href": "/"
+		},
+		{
+			"label": "News",
+			"href": "/news"
+		},
+		{
+			"label": "Podcast",
+			"href": "/podcast"
+		},
+		{
+			"label": "Resources",
+			"href": "/resources"
+		},
+		{
+			"label": "Contacts",
+			"href": "/contacts"
+		}
+	],
+	"contactButtonText": "Contact Us"
+}

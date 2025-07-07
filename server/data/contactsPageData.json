@@ -1,0 +1,48 @@
+{
+	"svgIcons": "FourCircle",
+	"title": "Get in Touch with AI Podcasts",
+	"inputs": [
+		{
+			"name": "first_name",
+			"label": "First name",
+			"type": "text",
+			"placeholder": "Enter First Name",
+			"required": true
+		},
+		{
+			"name": "last_name",
+			"label": "Last name",
+			"type": "text",
+			"placeholder": "Enter Last Name",
+			"required": true
+		},
+		{
+			"name": "email",
+			"label": "Email",
+			"type": "email",
+			"placeholder": "Enter your Email",
+			"required": true
+		},
+		{
+			"name": "phone",
+			"label": "Phone Number",
+			"type": "text",
+			"placeholder": "Enter Phone Number",
+			"required": true
+		},
+		{
+			"name": "message",
+			"label": "Message",
+			"type": "textarea",
+			"placeholder": "Enter your Message",
+			"required": true
+		},
+		{
+			"name": "acceptence",
+			"label": "I agree with Terms of Use and Privacy Policy",
+			"type": "checkbox",
+			"defaultValue": false,
+			"required": true
+		}
+	]
+}
