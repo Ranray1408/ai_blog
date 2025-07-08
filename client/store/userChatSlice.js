@@ -14,6 +14,7 @@ export const userChatSlice = createSlice({
   reducers: {
     setSessionId: (state, action) => {
       state.sessionId = action.payload;
+      state.currentUserId = action.payload;
       state.isOpen = true;
     },
     setUserMessages: (state, action) => {

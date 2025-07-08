@@ -131,7 +131,8 @@ export const ChatWidget: FC<IChatWidgetProps> =
 				</div>
 
 				<div className='messages-box'>
-					{chatEntity.messages?.length && chatEntity.messages.map(message => {
+					{chatEntity.messages && chatEntity.messages.length > 0 &&
+						chatEntity.messages.map(message => {
 						if (!message?.id || !message?.text) return '';
 
 						const myMessageClass = message.senderId === currentUserId ? 'my-message' : 'other-message';

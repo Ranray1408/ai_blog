@@ -25,6 +25,7 @@ const NavigationWrapper = styled.nav`
 		z-index: 100;
 		align-items: flex-start;
     	padding-top: 90px;
+		overflow-y: auto;
 
 		.navigation-inner {
 
@@ -158,7 +159,7 @@ const Navigation = () => {
 						const isActive = pathName === item.href ? 'active' : '';
 
 						return (
-							<Link className={`menu-item ${isActive}`} key={item.label} href={item.href}>
+							<Link onClick={() => SetIsMenuOpened(false)} className={`menu-item ${isActive}`} key={item.label} href={item.href}>
 								{item.label}
 							</Link>
 						)

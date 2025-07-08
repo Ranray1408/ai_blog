@@ -3,6 +3,7 @@ import { Admin, Resource } from 'react-admin';
 import simpleRestProvider from 'ra-data-simple-rest';
 import CustomersList from './CustomersList';
 import PageBlockCustomShow from './PageBlockCustomShow';
+import API_ENDPOINTS from '@/app/config/APIs';
 
 const getApisData = [
   { apiName: 'header', blockKey: 'header_data' },
@@ -17,7 +18,7 @@ const getApisData = [
   { apiName: 'contactsPage', blockKey: 'contacts_page_data' },
 ];
 
-const baseProvider = simpleRestProvider('http://localhost:5000/api');
+const baseProvider = simpleRestProvider(API_ENDPOINTS.API_PATH);
 const dataProvider = {
   ...baseProvider,
   getList: (resource, params) => {
@@ -31,13 +32,15 @@ const AppAdmin = () => {
   return (
     <Admin dataProvider={dataProvider}>
       <Resource name="customers" list={CustomersList} />
-      {getApisData.map(({ apiName }) => (
+      {getApisData.map(({ apiName }) => {
+
+      return (
         <Resource
           key={apiName}
           name={apiName}
           list={(props) => <PageBlockCustomShow {...props} apiUrl={apiName} />}
         />
-      ))}
+      )})}
     </Admin>
   );
 };

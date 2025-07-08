@@ -22,11 +22,6 @@ exports.addCustomer = async (req, res) => {
 
 		if (result.success) {
 			res
-				.cookie('session_id', result.session_id, {
-					httpOnly: true,
-					maxAge: 60 * 60 * 1000,
-					sameSite: 'lax',
-				})
 				.status(200)
 				.json(result);
 		} else {

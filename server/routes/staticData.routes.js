@@ -22,7 +22,7 @@ getApisData.forEach(({ apiName, blockKey }) => {
 		controllerGetBlockData.getBlockData(req, res, blockKey);
 	});
 
-	const adminPath = `${apiName}`;
+	const adminPath = `${apiName}/adminData`;
 
 	router.get(adminPath, (req, res) => {
 		controllerGetBlockData.getBlockDataAdmin(req, res, blockKey);

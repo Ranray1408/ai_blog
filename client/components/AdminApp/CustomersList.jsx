@@ -8,7 +8,8 @@ import styled from '@emotion/styled';
 
 const TableWrapper = styled.table`
   border-radius: 15px;
-  overflow: hidden;
+  min-width: 1200px;
+  border-collapse: collapse;
 
   thead {
 
@@ -64,6 +65,7 @@ const CustomCustomerTable = () => {
   const onlineCustomers = useSelector(state => state.adminActiveCustomersState.list);
   const dispatch = useDispatch();
   const adminChats = useSelector(state => state.adminChatsState.chats);
+  const activeViewedCustomers = useSelector(state => state.adminActiveCustomersState.viewed);
 
   useAdminChatSocket();
 
@@ -81,9 +83,10 @@ const CustomCustomerTable = () => {
   if (!data || data.length === 0) return <p>No customers found.</p>;
 
   return (
-    <TableWrapper style={{ width: '100%', borderCollapse: 'collapse' }}>
+    <TableWrapper>
       <thead>
         <tr>
+          <th>Action</th>
           <th>ID</th>
           <th>Session id</th>
           <th>First Name</th>
@@ -91,15 +94,39 @@ const CustomCustomerTable = () => {
           <th>Email</th>
           <th>Phone</th>
           <th>Message</th>
-          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {data.map((record) => {
           const isConnected = adminChats.some(chat => chat.sessionId === record.session_id);
 
+          const isOnline = onlineCustomers?.includes(record.session_id);
+          const isViewed = activeViewedCustomers?.includes(record.session_id);
+
+          let statusLabel = <span style={{ color: 'grey' }}>⚫ Offline</span>;
+          let chatBtn = '';
+          if (isOnline && isViewed) {
+            statusLabel = <span style={{ color: 'green' }}>🟢 Online</span>;
+            chatBtn = <OpenChatButton
+              sessionId={record.session_id}
+              isConnected={isConnected}
+              onClick={handleAddChat}
+            />;
+          } else if (isOnline && !isViewed) {
+            chatBtn = <OpenChatButton
+              sessionId={record.session_id}
+              isConnected={isConnected}
+              onClick={handleAddChat}
+            />;
+            statusLabel = <span style={{ color: 'orange' }}>🟡 Away</span>;
+          }
+
           return (
             <tr key={record.id}>
+              <td className='chat-section'>
+                {chatBtn}
+                {statusLabel}
+              </td>
               <td>{record.id}</td>
               <td>{record.session_id ?? 'No session_id'}</td>
               <td>{record.first_name}</td>
@@ -108,20 +135,6 @@ const CustomCustomerTable = () => {
               <td>{record.phone}</td>
               <td className='message-td'>
                 {record.message}
-              </td>
-              <td className='chat-section'>
-                {onlineCustomers && onlineCustomers?.includes(record.session_id) ? (
-                  <>
-                    <OpenChatButton
-                      sessionId={record.session_id}
-                      isConnected={isConnected}
-                      onClick={handleAddChat}
-                    />
-                    <span style={{ color: 'green' }}>🟢 Online</span>
-                  </>
-                ) : (
-                  <span style={{ color: 'grey' }}>⚫ Offline</span>
-                )}
               </td>
             </tr>
           )
@@ -138,3 +151,4 @@ const CustomerList = () => (
 );
 
 export default CustomerList;
+

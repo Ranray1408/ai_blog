@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDataProvider, useNotify } from 'react-admin';
 import { YellowBtn } from '../UI/Buttons';
+import API_ENDPOINTS from '@/app/config/APIs';
 
 type AnyType = string | number | boolean | null | AnyType[] | { [key: string]: AnyType };
 
@@ -43,7 +44,7 @@ const PageBlockCustomShow: React.FC<PageBlockCustomShowProps> = ({ apiUrl }) => 
 				setLoading(false);
 			})
 			.catch((err) => {
-				console.error(err);
+				console.error('❌ Error fetching block data:', err);
 				notify('Error fetching data', { type: 'error' });
 			});
 	}, [dataProvider, notify, apiUrl]);
@@ -67,7 +68,7 @@ const EditableBlock: React.FC<EditableBlockProps> = ({ blockData, apiUrl }) => {
 		e.preventDefault();
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/${apiUrl}`, {
+			const response = await fetch(`${API_ENDPOINTS.API_PATH}/${apiUrl}/adminData	`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -78,17 +79,17 @@ const EditableBlock: React.FC<EditableBlockProps> = ({ blockData, apiUrl }) => {
 				}),
 			});
 
-			if (!response.ok) throw new Error('Не вдалося оновити блок');
+			if (!response.ok) throw new Error('Failed to update block');
 
 			const result = await response.json();
 			setResponseMsg(result.message);
-			notify('Блок успішно оновлено', { type: 'success' });
+			notify('Block updated successfully', { type: 'success' });
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
-			//console.error(error);
-			setResponseMsg('Сталася помилка при збереженні');
-			notify(error.message || 'Помилка при оновленні блоку', { type: 'error' });
+			console.error('❌ Error while saving block:', error);
+			setResponseMsg('Error occurred while saving');
+			notify(error.message || 'Error updating block', { type: 'error' });
 		}
 	};
 

@@ -8,6 +8,8 @@ import { fetchContactsPage } from '@/store/contactsPageSlice';
 import { SVG_COMPONENTS } from '@/Helpers/single-func';
 import Typography from '../Typography/Typography';
 import API_ENDPOINTS from '@/app/config/APIs';
+import { useDispatch } from 'react-redux';
+import { setSessionId } from '@/store/userChatSlice';
 
 const ContactFormWrapper = styled.section`
 	border-bottom: 1px solid ${props => props.theme.colors.borderColor};
@@ -151,6 +153,7 @@ const ContactForm = () => {
 		reducer: 'contactsPageState',
 		fetchAction: fetchContactsPage
 	});
+	const dispatch = useDispatch();
 
 	const SvgComponent = SVG_COMPONENTS[svgIcons] || (() => null);
 
@@ -162,9 +165,15 @@ const ContactForm = () => {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(data),
 			});
-			const response = await repJSON.json(); // РОЗПАРСИТИ відповідь!
+			const response = await repJSON.json();
 
 			if (response.success) {
+				console.log('response', response);
+
+				if (response.customer.session_id) {
+					dispatch(setSessionId(response.customer.session_id))
+				}
+
 				setServerMessage("Your message was accepted, we will contact you soon!");
 			} else {
 				setServerMessage(response.message || "Something went wrong...");

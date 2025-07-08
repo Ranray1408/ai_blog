@@ -1,7 +1,7 @@
 const { Server } = require('socket.io');
 
 module.exports = function (server) {
-	// Усі повідомлення по кімнатах
+	// All messages per room
 	const messagesPerRoom = {};
 
 	const io = new Server(server, {
@@ -17,23 +17,23 @@ module.exports = function (server) {
 
 			socket.join(roomName);
 
-			// Ініціалізуємо масив якщо його нема
+			// Initialize array if not exists
 			if (!messagesPerRoom[roomName]) {
 				messagesPerRoom[roomName] = [];
 			}
 
-			// Якщо це не кімната адмінів, зберігаємо sessionId
+			// If it's not the admins room, store sessionId
 			if (roomName !== 'admins') {
 				socket.sessionId = roomName;
 
-				// Кажемо всім адмінам що зʼявився новий клієнт
+				// Notify all admins about new online customer
 				io.to('admins').emit('new_customer_online', { sessionId: roomName });
 
-				// Віддаємо користувачу всю історію
+				// Send full chat history to the customer
 				socket.emit('history_messages', { messages: messagesPerRoom[roomName] });
 			}
 
-			// Якщо це адмін — даємо список активних клієнтів
+			// If it's an admin, send list of active customers
 			if (roomName === 'admins') {
 				const activeRooms = [];
 				io.sockets.adapter.rooms.forEach((sockets, name) => {
@@ -41,7 +41,7 @@ module.exports = function (server) {
 
 					if (
 						name !== 'admins' &&
-						!io.sockets.sockets.get(name) && // Не сокет id
+						!io.sockets.sockets.get(name) && // Not a socket id
 						sockets.size > 0
 					) {
 						activeRooms.push(name);
@@ -54,12 +54,19 @@ module.exports = function (server) {
 
 		socket.on('get_chat_history', ({ sessionId }) => {
 			const history = messagesPerRoom[sessionId] || [];
-			console.log('history', history);
 
 			socket.emit('history_messages', { sessionId, chatMessages: history });
 		});
 
-		// Нова схема: отримуємо одне повідомлення
+		socket.on('customer_away', ({ sessionId }) => {
+			io.to('admins').emit('customer_away', { sessionId });
+		});
+
+		socket.on('customer_back', ({ sessionId }) => {
+			io.to('admins').emit('customer_back', { sessionId });
+		});
+
+		// New scheme: receive a single message
 		socket.on('new_message', ({ sessionId, newMessage }) => {
 			if (!messagesPerRoom[sessionId]) {
 				messagesPerRoom[sessionId] = [];
@@ -67,10 +74,10 @@ module.exports = function (server) {
 
 			messagesPerRoom[sessionId].push(newMessage);
 
-			// Відправляємо повідомлення всім у кімнаті
+			// Send message to everyone in the room
 			io.to(sessionId).emit('new_message', { newMessage });
 
-			// Також повідомляємо всіх адмінів з ідентифікатором кімнати
+			// Also notify all admins with the room id
 			io.to('admins').emit('new_message', { sessionId, newMessage });
 		});
 

@@ -3,11 +3,10 @@ import { useEffect } from 'react';
 import { AppDispatch, BaseFetchData, IRootState } from '@/interfaces';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Socket } from 'socket.io-client';
-import Cookies from 'js-cookie';
 import { IMessage } from '@/interfaces';
 import { setSessionId, setUserMessages } from '@/store/userChatSlice';
 import { addAdminChat, addMessageToAdminChat } from '@/store/adminChatsSlice';
-import { addOnlineCustomer, removeOnlineCustomer, updateOnlineCustomers } from '@/store/adminActiveCustomersSlice';
+import { addOnlineCustomer, markCustomerAsAway, markCustomerAsBack, removeOnlineCustomer, updateOnlineCustomers } from '@/store/adminActiveCustomersSlice';
 import { userSocket } from './userSocketInstance';
 import { adminSocket } from './adminSocketInstance';
 
@@ -64,27 +63,50 @@ export const useBaseChatSocket = ({ socket }: { socket: Socket }) => {
 
 export const useUserChatSocket = () => {
 	const dispatch = useDispatch();
-	const sessionId = Cookies.get('session_id');
+	const chatSessionId = useSelector((state: IRootState) => state.userChatState.sessionId);
 
 	useBaseChatSocket({ socket: userSocket });
 
 	useEffect(() => {
-		if (!sessionId) {
+		const handleVisibilityChange = () => {
+			if (!chatSessionId) return;
+
+			if (document.hidden) {
+				userSocket.emit('customer_away', { sessionId: chatSessionId });
+			} else {
+				userSocket.emit('customer_back', { sessionId: chatSessionId });
+			}
+		};
+
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+		return () => {
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
+		};
+	}, [chatSessionId]);
+
+	useEffect(() => {
+		if (!chatSessionId) {
 			console.warn('⚠️ No session ID!');
 			return;
 		}
 
-		userSocket.emit('join_room', sessionId);
+		if (userSocket.connected) {
+			userSocket.disconnect();
+		}
+
+		userSocket.connect();
+
+		userSocket.emit('join_room', chatSessionId);
 
 		userSocket.on('history_messages', ({ chatMessages }) => {
 			console.log('history_messages', chatMessages);
-			dispatch(setSessionId(sessionId));
+			dispatch(setSessionId(chatSessionId));
 			dispatch(setUserMessages({ messages: chatMessages }))
 		});
 
 		userSocket.on('new_message', ({ newMessage }: { newMessage: IMessage }) => {
 			console.log('new_message', newMessage);
-			userSocket.emit('get_chat_history', { sessionId: sessionId });
+			userSocket.emit('get_chat_history', { sessionId: chatSessionId });
 
 			//dispatch(setUserMessage(newMessage))
 		});
@@ -93,19 +115,19 @@ export const useUserChatSocket = () => {
 			userSocket.off('new_message');
 			userSocket.off('history_messages');
 		};
-	}, [sessionId, dispatch]);
+	}, [chatSessionId, dispatch]);
 
 	const onSendMessage = (text: string) => {
-		if (!sessionId) return;
+		if (!chatSessionId) return;
 
 		const newMessage = {
 			id: Date.now().toString(),
 			text,
-			senderId: sessionId,
+			senderId: chatSessionId,
 			timestamp: new Date().toISOString(),
 		};
 
-		userSocket.emit('new_message', { sessionId, newMessage });
+		userSocket.emit('new_message', { chatSessionId, newMessage });
 	};
 
 	return { onSendMessage };
@@ -142,6 +164,14 @@ export const useAdminChatSocket = () => {
 
 		adminSocket.on('customer_disconnected', ({ sessionId }: { sessionId: string }) => {
 			dispatch(removeOnlineCustomer(sessionId));
+		});
+
+		adminSocket.on('customer_away', ({ sessionId }) => {
+			dispatch(markCustomerAsAway(sessionId));
+		});
+
+		adminSocket.on('customer_back', ({ sessionId }) => {
+			dispatch(markCustomerAsBack(sessionId));
 		});
 
 		return () => {

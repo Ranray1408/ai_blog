@@ -16,16 +16,16 @@ const ChatWrapper = styled.div`
 `;
 
 
-const ensureSessionId = (sessionId: string | undefined) => {
+// const ensureSessionId = (sessionId: string | undefined) => {
 
-  if (!sessionId) {
-    const staticSessionId = '1e66f79d-eec6-4be6-8800-2ef95790f804';
-    Cookies.set('session_id', staticSessionId, {
-      expires: 1,
-      sameSite: 'lax',
-    });
-  }
-};
+//   if (!sessionId) {
+//     const staticSessionId = '1e66f79d-eec6-4be6-8800-2ef95790f804';
+//     Cookies.set('session_id', staticSessionId, {
+//       expires: 1,
+//       sameSite: 'lax',
+//     });
+//   }
+// };
 
 const ChatPopup = () => {
   const dispatch = useDispatch();
@@ -34,7 +34,17 @@ const ChatPopup = () => {
 
   const [sessionId, setSessionIdLocal] = useState<string | undefined>(undefined);
   const chat = useSelector((state: IRootState) => state.userChatState);
+  const messages = useSelector((state: IRootState) => state.userChatState.messages);
   console.log('chat', chat);
+
+  useEffect(() => {
+    if (chat.sessionId) {
+      Cookies.set('session_id', chat.sessionId, {
+        expires: 1,
+        sameSite: 'lax',
+      });
+    }
+  }, [chat.sessionId, messages])
 
   useEffect(() => {
     const cookieSession = Cookies.get('session_id');
@@ -60,9 +70,6 @@ const ChatPopup = () => {
   const removeChat = () => {
     dispatch(removeUserChat())
   }
-
-  //Temp code
-  ensureSessionId(sessionId);
 
   return chat.messages?.length && sessionId &&
     <ChatWrapper className='user-chat'>
