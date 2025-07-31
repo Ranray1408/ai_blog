@@ -9,6 +9,7 @@ import Twitter from "@/images/svg-icons/Twitter";
 import Spotify from "@/images/svg-icons/Spotify ";
 import Linkedin from "@/images/svg-icons/Linkedin";
 import FourCircle from "@/images/svg-icons/FourCircle";
+import ChatIcon from "@/images/svg-icons/ChatIcon";
 
 export const formatNumber = (number: number) => {
 	if (number >= 1000) {
@@ -31,4 +32,5 @@ export const SVG_COMPONENTS: { [key: string]: React.ComponentType } = {
 	Spotify,
 	Linkedin,
 	FourCircle,
+	ChatIcon
 };

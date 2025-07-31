@@ -5,26 +5,57 @@ import { useUserChatSocket } from '@/Helpers/custom-hooks';
 import { IMessage, IRootState } from '@/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSocket } from '@/Helpers/userSocketInstance';
-import { removeUserChat, setSessionId } from '@/store/userChatSlice';
-import { useEffect, useState } from 'react';
+import { closeUserChat, openUserChat, setSessionId } from '@/store/userChatSlice';
+import { useEffect } from 'react';
+import { SVG_COMPONENTS } from '@/Helpers/single-func';
 
 const ChatWrapper = styled.div`
     position: fixed;
     left: 20px;
     z-index: 10000;
     bottom: 20px;
+
+    .user-chat-button {
+      z-index: 10000;
+      position: fixed;
+      padding: 0;
+      bottom: 6px;
+      left: 80px;
+      border-radius: 50%;
+      border: none;
+      background-color: transparent;
+
+      svg {
+        transition: transform 0.3s;
+      }
+
+      &:hover svg{
+        transform: scale(1.3, 1.3);
+      }
+
+      &.is-incoming {
+        &::after {
+          content: '';
+          display: block;
+          width: 20px;
+          height: 20px;
+          background-color: red;
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          border-radius: 50%;
+        }
+      }
+    }
 `;
 
 
-// const ensureSessionId = (sessionId: string | undefined) => {
-
-//   if (!sessionId) {
-//     const staticSessionId = '1e66f79d-eec6-4be6-8800-2ef95790f804';
+// const ensureSessionId = () => {
+//     const staticSessionId = '2e12c612-f998-4507-a087-5f9fdfbbad9f';
 //     Cookies.set('session_id', staticSessionId, {
 //       expires: 1,
 //       sameSite: 'lax',
 //     });
-//   }
 // };
 
 const ChatPopup = () => {
@@ -32,10 +63,13 @@ const ChatPopup = () => {
 
   useUserChatSocket();
 
-  const [sessionId, setSessionIdLocal] = useState<string | undefined>(undefined);
   const chat = useSelector((state: IRootState) => state.userChatState);
-  const messages = useSelector((state: IRootState) => state.userChatState.messages);
+  useSelector((state: IRootState) => state.userChatState.messages);
   console.log('chat', chat);
+
+  // useEffect(() => {
+  //   dispatch(setSessionId('2e12c612-f998-4507-a087-5f9fdfbbad9f'));
+  // }, []);
 
   useEffect(() => {
     if (chat.sessionId) {
@@ -44,37 +78,53 @@ const ChatPopup = () => {
         sameSite: 'lax',
       });
     }
-  }, [chat.sessionId, messages])
+  }, [chat.sessionId])
 
   useEffect(() => {
     const cookieSession = Cookies.get('session_id');
     if (cookieSession) {
       dispatch(setSessionId(cookieSession));
-      setSessionIdLocal(cookieSession);
     }
   }, [dispatch]);
 
   const onSendMessage = (text: string) => {
-    if (!sessionId) return;
+    if (!chat.sessionId) return;
 
     const newMessage: IMessage = {
       id: Date.now().toString(),
       text,
-      senderId: sessionId,
+      senderId: chat.sessionId,
       timestamp: new Date().toISOString(),
     };
 
-    userSocket.emit('new_message', { sessionId, newMessage });
+    userSocket.emit('new_message', { sessionId: chat.sessionId, newMessage });
   };
 
-  const removeChat = () => {
-    dispatch(removeUserChat())
+  const closeChat = () => {
+    dispatch(closeUserChat())
   }
 
-  return chat.messages?.length && sessionId &&
-    <ChatWrapper className='user-chat'>
-      <ChatWidget currentUserId={sessionId} removeChat={removeChat} onSendMessage={onSendMessage} chatEntity={chat} />
-    </ChatWrapper>;
+  const openChat = () => {
+    dispatch(openUserChat())
+  }
+
+  if (chat.isOpen) {
+    return chat.messages?.length && chat.sessionId &&
+      <ChatWrapper className='user-chat'>
+        <ChatWidget currentUserId={chat.sessionId} closeChat={closeChat} onSendMessage={onSendMessage} chatEntity={chat} />
+      </ChatWrapper>;
+
+  } else {
+    const ChatIcon = SVG_COMPONENTS['ChatIcon'];
+    return chat.messages?.length && chat.sessionId &&
+      <ChatWrapper className='user-chat'>
+        <button
+          onClick={() => openChat()}
+          className={`user-chat-button ${chat.isIncoming ? 'is-incoming' : ''}`}>
+          <ChatIcon />
+        </button>
+      </ChatWrapper >;
+  }
 };
 
 export default ChatPopup;

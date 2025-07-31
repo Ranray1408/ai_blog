@@ -269,8 +269,10 @@ export interface IMessage {
 export interface IChatEntity {
 	sessionId: string;
 	isOpen?: boolean;
+	hasNewMessage: boolean;
 	messages: IMessage[];
 	currentUserId: null | string,
+	isIncoming: boolean,
 }
 
 export interface IAdminChatsState {
@@ -282,5 +284,5 @@ export interface IChatWidgetProps {
 	chatEntity: IChatEntity;
 	currentUserId: string;
 	onSendMessage: (text: string, sessionId: string) => void;
-	removeChat: (sessionId: string) => void;
+	closeChat: (sessionId: string) => void;
 }

@@ -111,22 +111,21 @@ export const ChatWidget: FC<IChatWidgetProps> =
 	(
 		{ 	chatEntity,
 			onSendMessage = () => { },
-			removeChat = () => { },
-			currentUserId
+			closeChat = () => { },
+			currentUserId,
 		}
 	) => {
 		const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-
 		useEffect(() => {
 			messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-		}, [chatEntity]);
+		}, []);
 
 		return (
 			<ChatWidgetWrapper>
 				<div className='chat-controller'>
 					<button
-						onClick={() => removeChat(chatEntity.sessionId)}
+						onClick={() => closeChat(chatEntity.sessionId)}
 						className='chat-controller-btn'>X</button>
 				</div>
 

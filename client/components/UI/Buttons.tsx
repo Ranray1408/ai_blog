@@ -154,10 +154,10 @@ const BtnWithIconWrapper = styled.button`
 `;
 
 const BtnWithIconLinkWrapper = BtnWithIconWrapper.withComponent(Link);
-export const BtnWithIcon = ({ text, className = '', isHyperlink = false, hrefLink = '#', icon = null }: IButton) => {
+export const BtnWithIcon = ({ text = '', className = '', isHyperlink = false, hrefLink = '#', icon = null }: IButton) => {
 	return isHyperlink ? (
 		<BtnWithIconLinkWrapper href={hrefLink} className={`btn-with-icon ${className} ${inter.className}`}>
-			{text}
+			{text ?? ''}
 			{icon ?? ''}
 		</BtnWithIconLinkWrapper>
 	) : (

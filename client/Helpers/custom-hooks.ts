@@ -4,8 +4,8 @@ import { AppDispatch, BaseFetchData, IRootState } from '@/interfaces';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Socket } from 'socket.io-client';
 import { IMessage } from '@/interfaces';
-import { setSessionId, setUserMessages } from '@/store/userChatSlice';
-import { addAdminChat, addMessageToAdminChat } from '@/store/adminChatsSlice';
+import { setIsIncoming, setSessionId, setUserMessage, setUserMessages } from '@/store/userChatSlice';
+import { addAdminChat, addMessageToAdminChat, markChatIsIncoming } from '@/store/adminChatsSlice';
 import { addOnlineCustomer, markCustomerAsAway, markCustomerAsBack, removeOnlineCustomer, updateOnlineCustomers } from '@/store/adminActiveCustomersSlice';
 import { userSocket } from './userSocketInstance';
 import { adminSocket } from './adminSocketInstance';
@@ -64,18 +64,18 @@ export const useBaseChatSocket = ({ socket }: { socket: Socket }) => {
 export const useUserChatSocket = () => {
 	const dispatch = useDispatch();
 	const chatSessionId = useSelector((state: IRootState) => state.userChatState.sessionId);
+	const chat = useSelector((state: IRootState) => state.userChatState);
 
+	// 🔌 Base socket hook (ping, reconnect, etc.)
 	useBaseChatSocket({ socket: userSocket });
 
+	// 📡 Tab visibility control (away/back)
 	useEffect(() => {
-		const handleVisibilityChange = () => {
-			if (!chatSessionId) return;
+		if (!chatSessionId) return;
 
-			if (document.hidden) {
-				userSocket.emit('customer_away', { sessionId: chatSessionId });
-			} else {
-				userSocket.emit('customer_back', { sessionId: chatSessionId });
-			}
+		const handleVisibilityChange = () => {
+			const eventName = document.hidden ? 'customer_away' : 'customer_back';
+			userSocket.emit(eventName, { sessionId: chatSessionId });
 		};
 
 		document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -84,43 +84,62 @@ export const useUserChatSocket = () => {
 		};
 	}, [chatSessionId]);
 
+	// 🔌 Socket connection and join/chat history
 	useEffect(() => {
-		if (!chatSessionId) {
-			console.warn('⚠️ No session ID!');
-			return;
-		}
+		if (!chatSessionId) return;
 
 		if (userSocket.connected) {
 			userSocket.disconnect();
 		}
-
 		userSocket.connect();
 
 		userSocket.emit('join_room', chatSessionId);
-
-		userSocket.on('history_messages', ({ chatMessages }) => {
-			console.log('history_messages', chatMessages);
-			dispatch(setSessionId(chatSessionId));
-			dispatch(setUserMessages({ messages: chatMessages }))
-		});
-
-		userSocket.on('new_message', ({ newMessage }: { newMessage: IMessage }) => {
-			console.log('new_message', newMessage);
-			userSocket.emit('get_chat_history', { sessionId: chatSessionId });
-
-			//dispatch(setUserMessage(newMessage))
-		});
+		userSocket.emit('get_chat_history', { sessionId: chatSessionId });
 
 		return () => {
-			userSocket.off('new_message');
-			userSocket.off('history_messages');
+			userSocket.disconnect();
+		};
+	}, [chatSessionId]);
+
+	// 📥 Chat history listener
+	useEffect(() => {
+		const handleHistory = ({ chatMessages }: { chatMessages: IMessage[] }) => {
+			dispatch(setSessionId(chatSessionId!));
+			dispatch(setUserMessages({ messages: chatMessages }));
+		};
+
+		userSocket.on('history_messages', handleHistory);
+
+		return () => {
+			userSocket.off('history_messages', handleHistory);
 		};
 	}, [chatSessionId, dispatch]);
 
+	// 📥 New message listener
+	useEffect(() => {
+		const handleNewMessage = ({ newMessage }: { newMessage: IMessage }) => {
+			dispatch(setUserMessage(newMessage));
+
+			// 📌 Check if it's an incoming message
+			const isIncoming = newMessage.senderId !== chat.currentUserId;
+
+			if (isIncoming && !chat.isOpen) {
+				dispatch(setIsIncoming(true));
+			}
+		};
+
+		userSocket.on('new_message', handleNewMessage);
+
+		return () => {
+			userSocket.off('new_message', handleNewMessage);
+		};
+	}, [dispatch, chat.currentUserId, chat.isOpen]);
+
+	// ✉️ Send message
 	const onSendMessage = (text: string) => {
 		if (!chatSessionId) return;
 
-		const newMessage = {
+		const newMessage: IMessage = {
 			id: Date.now().toString(),
 			text,
 			senderId: chatSessionId,
@@ -140,48 +159,87 @@ export const useUserChatSocket = () => {
 export const useAdminChatSocket = () => {
 	const dispatch = useDispatch();
 
+	// Socket connection and base logic
 	useBaseChatSocket({ socket: adminSocket });
 
+	// Join admin room
 	useEffect(() => {
 		adminSocket.emit('join_room', 'admins');
+	}, []);
 
-		adminSocket.on('new_message', ({ sessionId, newMessage }: { sessionId: string, newMessage: IMessage }) => {
-			adminSocket.emit('get_chat_history', { sessionId });
+	// Handle new incoming messages
+	useEffect(() => {
+		const handleNewMessage = ({ sessionId, newMessage }: { sessionId: string; newMessage: IMessage }) => {
 			dispatch(addMessageToAdminChat({ sessionId, newMessage }));
-		});
 
-		adminSocket.on('active_customers', ({ rooms }: { rooms: string[] }) => {
-			dispatch(updateOnlineCustomers(rooms));
-		});
+			if (newMessage.senderId !== 'admin') {
+				dispatch(markChatIsIncoming(sessionId));
+			}
+		};
 
-		adminSocket.on('history_messages', ({ sessionId, chatMessages }) => {
-			dispatch(addAdminChat({ sessionId, chatMessages }));
-		});
-
-		adminSocket.on('new_customer_online', ({ sessionId }: { sessionId: string }) => {
-			dispatch(addOnlineCustomer(sessionId));
-		});
-
-		adminSocket.on('customer_disconnected', ({ sessionId }: { sessionId: string }) => {
-			dispatch(removeOnlineCustomer(sessionId));
-		});
-
-		adminSocket.on('customer_away', ({ sessionId }) => {
-			dispatch(markCustomerAsAway(sessionId));
-		});
-
-		adminSocket.on('customer_back', ({ sessionId }) => {
-			dispatch(markCustomerAsBack(sessionId));
-		});
-
+		adminSocket.on('new_message', handleNewMessage);
 		return () => {
-			adminSocket.off('new_message');
-			adminSocket.off('active_customers');
-			adminSocket.off('new_customer_online');
-			adminSocket.off('customer_disconnected');
+			adminSocket.off('new_message', handleNewMessage);
 		};
 	}, [dispatch]);
 
+	// Update list of online customers
+	useEffect(() => {
+		const handleActiveCustomers = ({ rooms }: { rooms: string[] }) => {
+			dispatch(updateOnlineCustomers(rooms));
+		};
+
+		adminSocket.on('active_customers', handleActiveCustomers);
+		return () => {
+			adminSocket.off('active_customers', handleActiveCustomers);
+		};
+	}, [dispatch]);
+
+	// Handle chat history
+	useEffect(() => {
+		const handleHistoryMessages = ({ sessionId, chatMessages }: { sessionId: string; chatMessages: IMessage[] }) => {
+			dispatch(addAdminChat({ sessionId, chatMessages }));
+		};
+
+		adminSocket.on('history_messages', handleHistoryMessages);
+		return () => {
+			adminSocket.off('history_messages', handleHistoryMessages);
+		};
+	}, [dispatch]);
+
+	// Handle user status changes
+	useEffect(() => {
+		const handleNewCustomerOnline = ({ sessionId }: { sessionId: string }) => {
+			dispatch(addOnlineCustomer(sessionId));
+			dispatch(markCustomerAsBack(sessionId));
+		};
+
+		const handleCustomerDisconnected = ({ sessionId }: { sessionId: string }) => {
+			dispatch(removeOnlineCustomer(sessionId));
+		};
+
+		const handleCustomerAway = ({ sessionId }: { sessionId: string }) => {
+			dispatch(markCustomerAsAway(sessionId));
+		};
+
+		const handleCustomerBack = ({ sessionId }: { sessionId: string }) => {
+			dispatch(markCustomerAsBack(sessionId));
+		};
+
+		adminSocket.on('new_customer_online', handleNewCustomerOnline);
+		adminSocket.on('customer_disconnected', handleCustomerDisconnected);
+		adminSocket.on('customer_away', handleCustomerAway);
+		adminSocket.on('customer_back', handleCustomerBack);
+
+		return () => {
+			adminSocket.off('new_customer_online', handleNewCustomerOnline);
+			adminSocket.off('customer_disconnected', handleCustomerDisconnected);
+			adminSocket.off('customer_away', handleCustomerAway);
+			adminSocket.off('customer_back', handleCustomerBack);
+		};
+	}, [dispatch]);
+
+	// Send message function
 	const onSendMessage = (text: string, sessionId: string) => {
 		const newMessage = {
 			id: Date.now().toString(),

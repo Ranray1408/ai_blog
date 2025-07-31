@@ -1,19 +1,16 @@
 import { useListContext, List } from 'react-admin';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAdminChatSocket } from '@/Helpers/custom-hooks';
-import { addAdminChat } from '@/store/adminChatsSlice';
 import { adminSocket } from '@/Helpers/adminSocketInstance';
 import { YellowBtn } from '../UI/Buttons';
 import styled from '@emotion/styled';
+import { openAdminChat } from '@/store/adminChatsSlice';
 
 const TableWrapper = styled.table`
   border-radius: 15px;
   min-width: 1200px;
+  width: 100%;
   border-collapse: collapse;
-
-  thead {
-
-  }
 
   th {
     text-align: 'left';
@@ -43,22 +40,22 @@ const TableWrapper = styled.table`
       margin: 0 20px;
     }
   }
+
+   .is-incoming {
+        position: relative;
+        &::after {
+          content: '';
+          display: block;
+          width: 20px;
+          height: 20px;
+          background-color: red;
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          border-radius: 50%;
+        }
+      }
 `;
-
-const OpenChatButton = ({ sessionId, isConnected, onClick }) => {
-  const handleOpenChat = () => {
-    if (!isConnected) {
-      onClick(sessionId);
-    }
-  };
-
-  return (
-    isConnected
-      ? <p>Chat opened</p>
-      : <YellowBtn onClick={handleOpenChat} disabled={isConnected} text='Open Chat' />
-  );
-};
-
 
 const CustomCustomerTable = () => {
   const { data, isLoading } = useListContext();
@@ -68,15 +65,17 @@ const CustomCustomerTable = () => {
   const activeViewedCustomers = useSelector(state => state.adminActiveCustomersState.viewed);
 
   useAdminChatSocket();
+  console.log('adminChats', adminChats);
 
   const handleAddChat = (sessionId) => {
+    const chatExists = adminChats.find(chat => chat.sessionId === sessionId);
+
+    if (chatExists) {
+      dispatch(openAdminChat(sessionId));
+      return;
+    }
+
     adminSocket.emit('get_chat_history', { sessionId });
-
-    adminSocket.on('history_messages', ({ sessionId, chatMessages }) => {
-      console.log('chatHistory', chatMessages);
-
-      dispatch(addAdminChat({ sessionId, chatMessages }));
-    });
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -98,27 +97,28 @@ const CustomCustomerTable = () => {
       </thead>
       <tbody>
         {data.map((record) => {
-          const isConnected = adminChats.some(chat => chat.sessionId === record.session_id);
+          const sessionId = record.session_id;
 
-          const isOnline = onlineCustomers?.includes(record.session_id);
-          const isViewed = activeViewedCustomers?.includes(record.session_id);
+          const chat = adminChats.find(chat => chat.sessionId === sessionId);
+          const isConnected = Boolean(chat);
+          const isChatOpen = chat?.isOpen === true;
+          const isIncoming = chat?.isIncoming;
+
+          const isOnline = onlineCustomers?.includes(sessionId);
+          const isViewed = activeViewedCustomers?.includes(sessionId);
 
           let statusLabel = <span style={{ color: 'grey' }}>⚫ Offline</span>;
           let chatBtn = '';
-          if (isOnline && isViewed) {
+
+          if (isOnline && isConnected && isChatOpen) {
             statusLabel = <span style={{ color: 'green' }}>🟢 Online</span>;
-            chatBtn = <OpenChatButton
-              sessionId={record.session_id}
-              isConnected={isConnected}
-              onClick={handleAddChat}
-            />;
-          } else if (isOnline && !isViewed) {
-            chatBtn = <OpenChatButton
-              sessionId={record.session_id}
-              isConnected={isConnected}
-              onClick={handleAddChat}
-            />;
-            statusLabel = <span style={{ color: 'orange' }}>🟡 Away</span>;
+            chatBtn = <p>Chat opened</p>;
+          } else if (isOnline && (!isConnected || !isChatOpen)) {
+            statusLabel = isViewed
+              ? <span style={{ color: 'green' }}>🟢 Online</span>
+              : <span style={{ color: 'orange' }}>🟡 Away</span>;
+
+            chatBtn = <YellowBtn className={`${isIncoming ? 'is-incoming' : ''}`} onClick={() => handleAddChat(sessionId)} text='Open Chat' />
           }
 
           return (

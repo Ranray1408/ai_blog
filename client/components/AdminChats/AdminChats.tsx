@@ -5,7 +5,7 @@ import { IMessage, IRootState } from '@/interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAdminChatSocket } from '@/Helpers/custom-hooks';
 import { adminSocket } from '@/Helpers/adminSocketInstance';
-import { addMessageToAdminChat, removeAdminChat } from '@/store/adminChatsSlice';
+import { addMessageToAdminChat, closeAdminChat } from '@/store/adminChatsSlice';
 
 const AdminChatsWrapper = styled.div`
     position: fixed;
@@ -41,8 +41,8 @@ const AdminChats = () => {
 		adminSocket.emit('new_message', { sessionId, newMessage });
 	};
 
-	const removeChat = (sessionId: string) => {
-		dispatch(removeAdminChat(sessionId))
+	const closeChat = (sessionId: string) => {
+		dispatch(closeAdminChat(sessionId));
 	}
 
 	return (
@@ -50,14 +50,20 @@ const AdminChats = () => {
 			{
 				chats &&
 				<AdminChatsWrapper>
-					{chats.map((chat) =>
-						<ChatWidget
-							removeChat={removeChat}
-							onSendMessage={onSendMessage}
-							key={chat.sessionId}
-							chatEntity={chat}
-							currentUserId={'admin'}
-						/>)}
+					{chats.map((chat) => {
+						if (!chat.isOpen) return null;
+
+						return (
+							<ChatWidget
+								closeChat={closeChat}
+								onSendMessage={onSendMessage}
+								key={chat.sessionId}
+								chatEntity={chat}
+								currentUserId={'admin'}
+							/>)
+					}
+					)
+					}
 				</AdminChatsWrapper>
 			}
 		</>

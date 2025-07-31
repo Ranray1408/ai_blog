@@ -6,6 +6,7 @@ const initialState = {
   messages: [],
   isOpen: false,
   currentUserId: null,
+  isIncoming: false,
 };
 
 export const userChatSlice = createSlice({
@@ -21,22 +22,28 @@ export const userChatSlice = createSlice({
       state.messages = action.payload.messages;
     },
     setUserMessage: (state, action) => {
-       state.messages.push(action.payload.newMessage);
+       state.messages.push(action.payload);
     },
-    removeUserChat: (state) => {
-      state.sessionId = null;
-      state.messages = [];
+    closeUserChat: (state) => {
       state.isOpen = false;
+    },
+    openUserChat: (state) => {
+      state.isOpen = true;
+      state.isIncoming = false;
+    },
+    setIsIncoming: (state, action) => {
+      state.isIncoming = action.payload;
     },
   },
 });
 
 export const {
-  removeUserChat,
+  closeUserChat,
+  openUserChat,
   setSessionId,
   setUserMessage,
   setUserMessages,
-  clearUserChat,
+  setIsIncoming,
 } = userChatSlice.actions;
 
 export default userChatSlice.reducer;
