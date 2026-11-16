@@ -206,7 +206,6 @@ export interface IRootState {
 	footerState: IFooterDataAPI;
 	contactsPageState: IContactsPageDataAPI;
 	userChatState: IChatEntity;
-	adminChatsState: IAdminChatsState;
 }
 
 
@@ -273,10 +272,6 @@ export interface IChatEntity {
 	messages: IMessage[];
 	currentUserId: null | string,
 	isIncoming: boolean,
-}
-
-export interface IAdminChatsState {
-	chats: IChatEntity[];
 }
 
 

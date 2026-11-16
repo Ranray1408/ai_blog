@@ -25,6 +25,12 @@ services:
       - "3000:3000"
     depends_on:
       - server
+  admin:
+    build: ./admin-panel
+    ports:
+      - "3001:80"
+    depends_on:
+      - server
 
 
 volumes:

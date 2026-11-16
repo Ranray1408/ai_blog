@@ -10,9 +10,7 @@ import blogInfoBlockReducer from './blogInfoBlockSlice';
 import downloadBlocksReducer from './downloadBlocksSlice';
 import titleLinksBlockReducer from './titleLinksBlockSlice';
 import contactsPageReducer from './contactsPageSlice';
-import adminChatsReducer from './adminChatsSlice';
 import userChatReducer from './userChatSlice';
-import adminActiveCustomersReducer from './adminActiveCustomersSlice';
 
 const store = configureStore({
   reducer: {
@@ -27,9 +25,7 @@ const store = configureStore({
     titleLinksBlockState: titleLinksBlockReducer,
     footerState: footerReducer,
     contactsPageState: contactsPageReducer,
-    adminChatsState: adminChatsReducer,
     userChatState: userChatReducer,
-    adminActiveCustomersState: adminActiveCustomersReducer,
   },
 });
 

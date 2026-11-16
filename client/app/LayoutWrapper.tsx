@@ -5,8 +5,6 @@ import { LayoutWrapperProps, IRootState } from "@/interfaces";
 import { useEffect } from "react";
 import { useSelector } from 'react-redux';
 import ChatPopup from "@/components/ChatPopup/ChatPopup";
-import { usePathname } from "next/navigation";
-import AdminChats from "@/components/AdminChats/AdminChats";
 
 const LayoutWrapper = ({ children }: LayoutWrapperProps) => {
 	const isPopupOpened = useSelector((state: IRootState) => state.mainStates.isPopupOpened);
@@ -21,8 +19,6 @@ const LayoutWrapper = ({ children }: LayoutWrapperProps) => {
 		return () => document.body.classList.remove('disable-scroll');
 	}, [isPopupOpened]);
 
-	const isAdminPanel = usePathname() === '/admin';
-
 	return (
 		<html lang="en">
 			<body className={`${inter.className} ${KumbhSans.className}`}>
@@ -30,11 +26,7 @@ const LayoutWrapper = ({ children }: LayoutWrapperProps) => {
 				{children}
 				<Footer />
 
-				{
-					!isAdminPanel
-						? <ChatPopup />
-						: <AdminChats />
-				}
+				<ChatPopup />
 			</body>
 		</html>
 	);
