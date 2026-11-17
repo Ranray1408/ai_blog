@@ -2,23 +2,37 @@ services:
   db:
     image: postgres:17
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-ai_blog_test}
+      POSTGRES_DB: ${DB_NAME:-ai_blog}
     ports:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   server:
     build: ./server
-    env_file: server/.env
+    env_file:
+      - path: server/.env
+        required: false
     environment:
       DB_HOST: db
       DB_PORT: 5432
+      DB_USER: ${DB_USER:-admin}
+      DB_PASSWORD: ${DB_PASSWORD:-ai_blog_test}
+      DB_NAME: ${DB_NAME:-ai_blog}
+      PORT_SERVER: 5000
+      SERVER_URL: "http://localhost:"
     ports:
       - "5000:5000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   client:
     build: ./client
     ports:

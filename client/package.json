@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:import": "dropdb --if-exists -U postgres ai_blog2 && createdb -U postgres -E UTF8 -T template0 --locale=C ai_blog2 && psql -U postgres -d ai_blog2 < ai_blog.sql"
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
